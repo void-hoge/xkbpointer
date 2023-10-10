@@ -58,6 +58,7 @@ private:
 	std::map<command, KeyCode> keybinds;
 	std::map<KeyCode, std::atomic_bool> keystatus;
 	std::set<KeyCode> xmodkeys;
+	std::set<KeyCode> usedkeys;
 	std::array<std::vector<KeyCode>, 8> xmodmap;
 	std::map<button, bool> last_button_status;
 

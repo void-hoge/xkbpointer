@@ -132,6 +132,7 @@ xkbpointer::xkbpointer(
 		}
 		this->keybinds[cmd] = keycode;
 		this->keystatus[keycode] = false;
+		this->usedkeys.insert(keycode);
 	}
 	last_button_status[button::left] = false;
 	last_button_status[button::middle] = false;
@@ -240,9 +241,10 @@ void xkbpointer::mainloop() {
 		XNextEvent(this->display, &event);
 		if (event.type == KeyPress or event.type == KeyRelease) {
 			KeyCode keycode = event.xkey.keycode;
-			this->keystatus.at(keycode) = event.type == KeyPress;
-			if (keycode == this->keybinds.at(command::quit)) break;
-			
+			if (this->usedkeys.contains(keycode)) {
+				this->keystatus.at(keycode) = event.type == KeyPress;
+				if (keycode == this->keybinds.at(command::quit)) break;
+			}			
 		}
 	}
 	pointer_movement_thread.join();
