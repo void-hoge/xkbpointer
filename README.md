@@ -14,7 +14,9 @@
 - X11
 - Xlib
 - XTEST extension
-- C++
+- C++20
+- CMake
+- GNU Make
 
 ## Build
 - `git clone https://github.com/void-hoge/xkbpointer.git`
@@ -24,7 +26,7 @@
 - `cmake ..`
 - `make`
 
-## Configuration
+## Configurations
 - The config file path is `$HOME/.config/xkbpointer.conf`.
 - An example of config file is available in [here](./xkbpointer.conf).
 - A single key can be used as each keybindings (modifier and combination keys are not available).
