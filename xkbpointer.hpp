@@ -82,8 +82,6 @@ private:
 	std::pair<std::uint8_t, std::uint8_t> keycode2idx(KeyCode kc);
 	bool command_enabled(command cmd, std::uint8_t *keymap);
 
-	std::uint32_t get_modifier_mask(std::uint8_t *keymap);
-
 	std::pair<std::int32_t, std::int32_t> pointer_delta(std::uint8_t *keymap);
 	void click_button(command cmd, bool pressed);
 	void scroll_updown(command cmd, bool pressed);

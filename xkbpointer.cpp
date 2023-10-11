@@ -69,20 +69,6 @@ bool xkbpointer::command_enabled(command cmd, std::uint8_t *keymap) {
 	return this->keystatus.at(keycode);
 }
 
-std::uint32_t xkbpointer::get_modifier_mask(std::uint8_t *keymap) {
-	std::uint32_t modmask = 0;
-	for (std::uint32_t i = 0; i < this->xmodmap.size(); i++) {
-		for (std::uint32_t j = 0; j < this->xmodmap[i].size(); j++) {
-			auto [byte, bit] = keycode2idx(this->xmodmap[i][j]);
-			if (keymap[byte] & (1 << bit)) {
-				modmask |= 1 << i;
-				break;
-			}
-		}
-	}
-	return modmask;
-}
-
 xkbpointer::xkbpointer(
 	const std::map<command, std::string>& keystrs,
 	const std::uint32_t framerate,
