@@ -31,22 +31,22 @@
 - An example of config file is available in [here](./xkbpointer.conf).
 - A single key can be used as each keybindings (modifier and combination keys are not available).
 
-| item             | description                                                | default |
-|------------------|------------------------------------------------------------|---------|
-| moveupper        | keybind for move pointer upper                             | w       |
-| movelower        | keybind for move pointer lower                             | s       |
-| moveleft         | keybind for move pointer left                              | a       |
-| moveright        | keybind for move pointer right                             | d       |
-| leftbutton       | keybind for left button                                    | j       |
-| middlebutton     | keybind for middle button                                  | k       |
-| rightbutton      | keybind for right button                                   | l       |
-| scrollup         | keybind for scroll up                                      | p       |
-| scrolldown       | keybind for scroll down                                    | n       |
-| quit             | keybind for quit                                           | q       |
-| framerate        | frame rate of pointer position updates (frames per second) | 60      |
-| scrollinterval   | scroll key repeat interval                                 | 4       |
+| item            | description                                                | default |
+|-----------------|------------------------------------------------------------|---------|
+| moveupper       | keybind for move pointer upper                             | w       |
+| movelower       | keybind for move pointer lower                             | s       |
+| moveleft        | keybind for move pointer left                              | a       |
+| moveright       | keybind for move pointer right                             | d       |
+| leftbutton      | keybind for left button                                    | j       |
+| middlebutton    | keybind for middle button                                  | k       |
+| rightbutton     | keybind for right button                                   | l       |
+| scrollup        | keybind for scroll up                                      | p       |
+| scrolldown      | keybind for scroll down                                    | n       |
+| quit            | keybind for quit                                           | q       |
+| framerate       | frame rate of pointer position updates (frames per second) | 60      |
+| scrollinterval  | scroll key repeat interval                                 | 4       |
 | maxvelocity     | maximum pointer velocity (pixels per frame)                | 100.0   |
-| acceleration     | pointer acceleration (pixels per per frame)                | 1.0     |
+| acceleration    | pointer acceleration (pixels per per frame)                | 1.0     |
 | initialvelocity | pointer initial velocity (pixels per frame)                | 1.0     |
 
 ## Author
