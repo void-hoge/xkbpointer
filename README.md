@@ -45,9 +45,9 @@
 | quit             | keybind for quit                                           | q       |
 | framerate        | frame rate of pointer position updates (frames per second) | 60      |
 | scrollinterval   | scroll key repeat interval                                 | 4       |
-| max velocity     | maximum pointer velocity (pixels per frame)                | 100.0   |
+| maxvelocity     | maximum pointer velocity (pixels per frame)                | 100.0   |
 | acceleration     | pointer acceleration (pixels per per frame)                | 1.0     |
-| initial velocity | pointer initial velocity (pixels per frame)                | 1.0     |
+| initialvelocity | pointer initial velocity (pixels per frame)                | 1.0     |
 
 ## Author
 - Mugi Noda (void-hoge)
