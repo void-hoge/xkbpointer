@@ -250,7 +250,7 @@ void xkbpointer::mainloop() {
 			if (this->usedkeys.contains(keycode)) {
 				this->keystatus.at(keycode) = event.type == KeyPress;
 				if (keycode == this->keybinds.at(command::quit)) break;
-			}			
+			}
 		}
 	}
 	pointer_movement_thread.join();
