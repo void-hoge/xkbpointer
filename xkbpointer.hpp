@@ -8,6 +8,7 @@
 #include <array>
 #include <set>
 #include <map>
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <cstdint>
@@ -47,12 +48,16 @@ private:
 	std::int32_t screen;
 	Window root;
 
-	std::map<command, button> buttonmap = {
+	const std::map<command, button> buttonmap = {
 		{command::leftbutton, button::left},
 		{command::middlebutton, button::middle},
 		{command::rightbutton, button::right},
 		{command::scrollup, button::up},
 		{command::scrolldown, button::down}
+	};
+
+	const std::array<std::uint32_t, 8> modmasks = {
+		ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask, Mod4Mask, Mod5Mask
 	};
 
 	std::map<command, KeyCode> keybinds;
@@ -73,11 +78,11 @@ private:
 	const std::uint32_t scroll_interval = 4;
 	std::uint32_t scroll_count;
 
+	void wait_until_interval();
+
 	void grab_keys();
 	void ungrab_keys();
 	void init_xmodmap();
-
-	void wait_until_interval();
 
 	std::pair<std::uint8_t, std::uint8_t> keycode2idx(KeyCode kc);
 	bool command_enabled(command cmd, std::uint8_t *keymap);

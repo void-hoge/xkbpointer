@@ -5,7 +5,7 @@
 
 using namespace xkbptr;
 
-std::map<std::string, command> str2command = {
+const std::map<std::string, command> str2command = {
 	{"moveupper",    command::moveupper   },
 	{"movelower",    command::movelower   },
 	{"moveleft",     command::moveleft    },
@@ -18,7 +18,7 @@ std::map<std::string, command> str2command = {
 	{"quit",         command::quit        }
 };
 
-std::map<std::string, std::string> default_config = {
+const std::map<std::string, std::string> default_config = {
 	{"framerate",       "60"   },
 	{"scrollinterval",  "4"    },
 	{"maxvelocity",     "100.0"},
@@ -26,7 +26,7 @@ std::map<std::string, std::string> default_config = {
 	{"initialvelocity", "1.0"  }
 };
 
-std::map<command, std::string> default_keybinds = {
+const std::map<command, std::string> default_keybinds = {
 	{command::moveupper,    "w"},
 	{command::movelower,    "s"},
 	{command::moveleft,     "a"},

@@ -9,23 +9,45 @@ int grab_error_handler(Display *display, XErrorEvent *error) {
 		char text[1024];
 		XGetErrorText(display, error->error_code, text, sizeof(text));
 		std::stringstream ss;
-		ss << text << " request_code: " << (int)error->request_code << " " << (int)error->error_code;
+		ss << text << "\n"
+		   << "request_code: " << (int)error->request_code << "\n"
+		   << "error_code: " << (int)error->error_code;
 		throw std::runtime_error(ss.str());
 	}
 }
 
 void xkbpointer::grab_keys() {
 	for (auto [cmd, keycode]: this->keybinds) {
-		for (std::uint32_t modmask = 0; modmask < (1<<8); modmask++) {
-			XGrabKey(this->display, keycode, modmask, this->root, true, GrabModeAsync, GrabModeAsync);
+		for (std::uint32_t r = 0; r <= 8; r++) {
+			std::vector<bool> vec(8, false);
+			std::fill(vec.end() - r, vec.end(), true);
+			do {
+				std::uint32_t modmask = 0;
+				for (std::uint32_t i = 0; i < 8; i++) {
+					if (vec[i]) {
+						modmask |= this->modmasks[i];
+					}
+				}
+				XGrabKey(this->display, keycode, modmask, this->root, true, GrabModeAsync, GrabModeAsync);
+			} while (std::next_permutation(vec.begin(), vec.end()));
 		}
 	}
 }
 
 void xkbpointer::ungrab_keys() {
 	for (auto [cmd, keycode]: this->keybinds) {
-		for (std::uint32_t modmask = 0; modmask < (1<<8); modmask++) {
-			XUngrabKey(this->display, keycode, modmask, this->root);
+		for (std::uint32_t r = 0; r <= 8; r++) {
+			std::vector<bool> vec(8, false);
+			std::fill(vec.end() - r, vec.end(), true);
+			do {
+				std::uint32_t modmask = 0;
+				for (std::uint32_t i = 0; i < 8; i++) {
+					if (vec[i]) {
+						modmask |= this->modmasks[i];
+					}
+				}
+				XUngrabKey(this->display, keycode, modmask, this->root);
+			} while (std::next_permutation(vec.begin(), vec.end()));
 		}
 	}
 }
@@ -67,66 +89,6 @@ bool xkbpointer::command_enabled(command cmd, std::uint8_t *keymap) {
 		this->keystatus.at(keycode) = false;
 	}
 	return this->keystatus.at(keycode);
-}
-
-xkbpointer::xkbpointer(
-	const std::map<command, std::string>& keystrs,
-	const std::uint32_t framerate,
-	const std::uint32_t scrollinterval,
-	const double maxvelocity,
-	const double acceleration,
-	const double initialvelocity):
-	polling_interval(1000000/framerate), scroll_interval(scrollinterval),
-	pointer_max_velocity(maxvelocity), pointer_acceleration(acceleration),
-	pointer_initial_velocity(initialvelocity) {
-
-	XSetErrorHandler(grab_error_handler);
-
-	this->display = XOpenDisplay(nullptr);
-	if (this->display == nullptr) {
-		throw std::runtime_error("Failed to connect the X server.");
-	}
-	this->screen = DefaultScreen(this->display);
-	this->root = DefaultRootWindow(this->display);
-	
-	this->init_xmodmap();
-
-	this->last_processed_time = std::chrono::system_clock::now();
-
-	this->pointer_velocity = 0.0;
-	this->scroll_count = 0;
-
-	for (auto [cmd, str]: keystrs) {
-		auto keysym = XStringToKeysym(str.c_str());
-		if (keysym == NoSymbol) {
-			std::stringstream ss;
-			ss << "Failed to covert string (" << str << ") to Keysym.";
-			throw std::runtime_error(ss.str());
-		}
-		auto keycode = XKeysymToKeycode(this->display, keysym);
-		if (keycode == 0) {
-			std::stringstream ss;
-			ss << "Failed to convert Keysym (" << keysym << ") to Keycode.";
-
-
-			throw std::runtime_error(ss.str());
-		}
-		if (this->xmodkeys.contains(keycode)) {
-			std::stringstream ss;
-			ss << str << " (keycode: " << (int)keycode << ") is not available as keybind.";
-			throw std::runtime_error(ss.str());
-		}
-		this->keybinds[cmd] = keycode;
-		this->keystatus[keycode] = false;
-		this->usedkeys.insert(keycode);
-	}
-	last_button_status[button::left] = false;
-	last_button_status[button::middle] = false;
-	last_button_status[button::right] = false;
-	last_button_status[button::up] = false;
-	last_button_status[button::down] = false;
-	this->grab_keys();
-	XAutoRepeatOff(this->display);
 }
 
 std::pair<std::int32_t, std::int32_t> xkbpointer::pointer_delta(std::uint8_t *keymap) {
@@ -209,6 +171,64 @@ void xkbpointer::update_buttons(std::uint8_t *keymap) {
 	this->click_button(command::rightbutton, right);
 	this->scroll_updown(command::scrollup, up);
 	this->scroll_updown(command::scrolldown, down);
+}
+
+xkbpointer::xkbpointer(
+	const std::map<command, std::string>& keystrs,
+	const std::uint32_t framerate,
+	const std::uint32_t scrollinterval,
+	const double maxvelocity,
+	const double acceleration,
+	const double initialvelocity):
+	polling_interval(1000000/framerate), scroll_interval(scrollinterval),
+	pointer_max_velocity(maxvelocity), pointer_acceleration(acceleration),
+	pointer_initial_velocity(initialvelocity) {
+
+	XSetErrorHandler(grab_error_handler);
+
+	this->display = XOpenDisplay(nullptr);
+	if (this->display == nullptr) {
+		throw std::runtime_error("Failed to connect the X server.");
+	}
+	this->screen = DefaultScreen(this->display);
+	this->root = DefaultRootWindow(this->display);
+	
+	this->init_xmodmap();
+
+	this->last_processed_time = std::chrono::system_clock::now();
+
+	this->pointer_velocity = 0.0;
+	this->scroll_count = 0;
+
+	for (auto [cmd, str]: keystrs) {
+		auto keysym = XStringToKeysym(str.c_str());
+		if (keysym == NoSymbol) {
+			std::stringstream ss;
+			ss << "Failed to covert string (" << str << ") to Keysym.";
+			throw std::runtime_error(ss.str());
+		}
+		auto keycode = XKeysymToKeycode(this->display, keysym);
+		if (keycode == 0) {
+			std::stringstream ss;
+			ss << "Failed to convert Keysym (" << keysym << ") to Keycode.";
+			throw std::runtime_error(ss.str());
+		}
+		if (this->xmodkeys.contains(keycode)) {
+			std::stringstream ss;
+			ss << str << " (keycode: " << (int)keycode << ") is not available as keybind.";
+			throw std::runtime_error(ss.str());
+		}
+		this->keybinds[cmd] = keycode;
+		this->keystatus[keycode] = false;
+		this->usedkeys.insert(keycode);
+	}
+	last_button_status[button::left] = false;
+	last_button_status[button::middle] = false;
+	last_button_status[button::right] = false;
+	last_button_status[button::up] = false;
+	last_button_status[button::down] = false;
+	this->grab_keys();
+	XAutoRepeatOff(this->display);
 }
 
 xkbpointer::~xkbpointer() {
