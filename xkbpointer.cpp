@@ -193,6 +193,8 @@ xkbpointer::xkbpointer(
 	this->screen = DefaultScreen(this->display);
 	this->root = DefaultRootWindow(this->display);
 	
+	XSelectInput(this->display, this->root, 0);
+
 	this->init_xmodmap();
 
 	this->last_processed_time = std::chrono::system_clock::now();
