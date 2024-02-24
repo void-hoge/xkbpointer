@@ -200,7 +200,7 @@ xkbpointer::xkbpointer(
 	this->pointer_velocity = 0.0;
 	this->scroll_count = 0;
 
-	for (auto [cmd, str]: keystrs) {
+	for (auto& [cmd, str]: keystrs) {
 		auto keysym = XStringToKeysym(str.c_str());
 		if (keysym == NoSymbol) {
 			std::stringstream ss;
