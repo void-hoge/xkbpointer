@@ -15,6 +15,7 @@
 	- `pkill xkbpointer && xset r || xkbpointer &`
 - If you start it with `-m` or `--momentary` option, it will start in momentary mode.
   - In this mode, the pointer can only be manipulated while the key is hold down that specified in the option `keystring`.
+	- Example: `xkbpointer -m Super_L` (Windows key)
   - Unfortunately, simultaneous operation with modifier keys does not work very well.
 	- This is because another program that detects the operation will detect that an unrelated key (`keystring` key) is being pressed at the same time.
 	- If anyone comes up with a solution to this, please send a PR.
