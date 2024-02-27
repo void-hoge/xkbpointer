@@ -1,6 +1,7 @@
 #include "xkbpointer.hpp"
 
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 
 //#define DEBUG
@@ -41,7 +42,7 @@ const std::map<command, std::string> default_keybinds = {
 	{command::quit,	        "q"}
 };
 
-int main() {
+int main(const int argc, const char** argv) {
 	std::stringstream ss;
 #if defined(DEBUG)
 	ss << "../xkbpointer.conf";
@@ -76,7 +77,19 @@ int main() {
 		std::stod(config.at("maxvelocity")),
 		std::stod(config.at("acceleration")),
 		std::stod(config.at("initialvelocity")));
-	//xkbptr.mainloop();
-	std::string tmp = "Super_L";
-	xkbptr.momentary_mode(tmp);
+	if (argc == 1) {
+		xkbptr.mainloop();
+	}else if (argc == 3) {
+		if (std::string(argv[1]) != std::string("-m") and
+			std::string(argv[1]) != std::string("--momentary")) {
+			std::stringstream ss;
+			ss << "Invalid command line option " << argv[1] << ".";
+			throw std::invalid_argument(ss.str());
+		}
+		std::string mokey(argv[2]);
+		xkbptr.momentary_mode(mokey);
+	}else {
+		std::cerr << "usage: xkbpointer [-m keystring | --momentary keystring]" << std::endl;
+		return -1;
+	}
 }

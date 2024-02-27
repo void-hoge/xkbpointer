@@ -274,8 +274,15 @@ void xkbpointer::mainloop() {
 }
 
 void xkbpointer::momentary_mode(const std::string& momentary_key) {
-	auto mokeycode = this->string2keycode(momentary_key);
-	XGrabKey(this->display, mokeycode, 0, this->root, true, GrabModeAsync, GrabModeAsync);
+	KeyCode mokeycode;
+	try {
+		mokeycode = this->string2keycode(momentary_key);
+	}catch (std::exception& e) {
+		std::stringstream ss;
+		ss << "\"" << momentary_key << "\" is not available for momentary key.";
+		throw std::invalid_argument(ss.str());
+	}
+	XGrabKey(this->display, mokeycode, AnyModifier, this->root, true, GrabModeAsync, GrabModeAsync);
 	XEvent event;
 	auto func = [&]() {
 		this->momentary_handle_pointer(mokeycode);
@@ -302,5 +309,5 @@ void xkbpointer::momentary_mode(const std::string& momentary_key) {
 			XAutoRepeatOn(this->display);
 		}
 	}
-	XUngrabKey(this->display, mokeycode, 0, this->root);
+	XUngrabKey(this->display, mokeycode, AnyModifier, this->root);
 }

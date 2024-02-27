@@ -18,7 +18,6 @@
 #include <exception>
 #include <stdexcept>
 #include <atomic>
-#include <optional>
 
 namespace xkbptr {
 
