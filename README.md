@@ -4,7 +4,6 @@
 ## Synopsis
 - `xkbpointer`: normal (toggle) mode
 - `xkbpointer [-m keystring | --momentary keystring]`: momentary mode
-  - 
 
 ## Overview
 - This program allows you to move a pointer on the screen by using predefined keyboard keys.
