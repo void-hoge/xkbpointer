@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <fstream>
 
+//#define DEBUG
+
 using namespace xkbptr;
 
 const std::map<std::string, command> str2command = {
@@ -41,7 +43,11 @@ const std::map<command, std::string> default_keybinds = {
 
 int main() {
 	std::stringstream ss;
+#if defined(DEBUG)
+	ss << "../xkbpointer.conf";
+#else
 	ss << std::getenv("HOME") << "/.config/xkbpointer.conf";
+#endif
 	std::string configfile = ss.str();
 	std::ifstream ifs(configfile);
 	auto keybinds = default_keybinds;
@@ -70,5 +76,7 @@ int main() {
 		std::stod(config.at("maxvelocity")),
 		std::stod(config.at("acceleration")),
 		std::stod(config.at("initialvelocity")));
-	xkbptr.mainloop();
+	//xkbptr.mainloop();
+	std::string tmp = "Super_L";
+	xkbptr.momentary_mode(tmp);
 }

@@ -18,6 +18,7 @@
 #include <exception>
 #include <stdexcept>
 #include <atomic>
+#include <optional>
 
 namespace xkbptr {
 
@@ -56,7 +57,7 @@ private:
 		{command::scrolldown, button::down}
 	};
 
-	const std::array<std::uint32_t, 8> modmasks = {
+	const std::array<uint32_t, 8> modmasks = {
 		ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask, Mod4Mask, Mod5Mask
 	};
 
@@ -75,8 +76,8 @@ private:
 	const double pointer_initial_velocity;
 	double pointer_velocity;
 
-	const std::uint32_t scroll_interval = 4;
-	std::uint32_t scroll_count;
+	const uint32_t scroll_interval = 4;
+	uint32_t scroll_count;
 
 	void wait_until_interval();
 
@@ -84,6 +85,7 @@ private:
 	void ungrab_keys();
 	void init_xmodmap();
 
+	KeyCode string2keycode(const std::string& str) const;
 	std::pair<std::uint8_t, std::uint8_t> keycode2idx(KeyCode kc);
 	bool command_enabled(command cmd, std::uint8_t *keymap);
 
@@ -91,18 +93,20 @@ private:
 	void click_button(command cmd, bool pressed);
 	void scroll_updown(command cmd, bool pressed);
 	void handle_pointer();
+	void momentary_handle_pointer(KeyCode mokey);
 	void update_movement(std::uint8_t *keymap);
 	void update_buttons(std::uint8_t *keymap);
 public:
 	xkbpointer(
 		const std::map<command, std::string>& keys,
-		const std::uint32_t frame_rate,
-		const std::uint32_t scroll_interval,
+		const uint32_t frame_rate,
+		const uint32_t scroll_interval,
 		const double max_velocity,
 		const double acceleration,
 		const double initialvelocity);
 	~xkbpointer();
 	void mainloop();
+	void momentary_mode(const std::string& momentary_key);
 };
 
 }; // namespace xkbptr
