@@ -2,13 +2,23 @@
 - xkbpointer - A pointing device emulator using a keyboard on X11.
 
 ## Synopsis
-`xkbpointer`
+- `xkbpointer`: normal (toggle) mode
+- `xkbpointer [-m keystring | --momentary keystring]`: momentary mode
+  - 
 
 ## Overview
 - This program allows you to move a pointer on the screen by using predefined keyboard keys.
 - This pointer movement replicates the functionality of a physical mouse, touchpad or trackpoint.
 - Keystrokes unrelated to cursor movement are processed normally.
-- Simultaneous operation with modifiers and other keys is also possible such as alt-left/rightdrag.
+- If you start it without any options, it will start in normal (toggle) mode.
+  - Simultaneous operation with modifiers and other keys is also possible such as alt-left/rightdrag.
+  - You can toggle it every time you run it using the command as below.
+	- `pkill xkbpointer && xset r || xkbpointer &`
+- If you start it with `-m` or `--momentary` option, it will start in momentary mode.
+  - In this mode, the pointer can only be manipulated while the key is hold down that specified in the option `keystring`.
+  - Unfortunately, simultaneous operation with modifier keys does not work very well.
+	- This is because another program that detects the operation will detect that an unrelated key (`keystring` key) is being pressed at the same time.
+	- If anyone comes up with a solution to this, please send a PR.
 
 ## Depends
 - X11
